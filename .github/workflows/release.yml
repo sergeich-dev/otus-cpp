@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - homework1
       - feature/github_actions
   workflow_dispatch:
 
