@@ -3,31 +3,31 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(ip_filter VERSION ${PROJECT_VESRION})
+project(allocator VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(ip_filter_cli ip_filter.cpp)
-add_library(ip_filter lib.cpp)
+add_executable(allocator_cli main.cpp)
+add_library(allocator lib.cpp)
 
-set_target_properties(ip_filter_cli ip_filter PROPERTIES
+set_target_properties(allocator_cli allocator PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(ip_filter
+target_include_directories(allocator
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(ip_filter_cli PRIVATE
-    ip_filter
+target_link_libraries(allocator_cli PRIVATE
+    allocator
 )
 
 if(WITH_BOOST_TEST)
     find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    add_executable(tests test_version.cpp test_filters.cpp)
+    add_executable(tests test_version.cpp)
 
     set_target_properties(tests PROPERTIES
         CXX_STANDARD 14
@@ -41,15 +41,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(tests
         ${Boost_LIBRARIES}
-        ip_filter
+        allocator
     )
 endif()
 
 if (MSVC)
-    target_compile_options(ip_filter_cli PRIVATE
+    target_compile_options(allocator_cli PRIVATE
         /W4
     )
-    target_compile_options(ip_filter PRIVATE
+    target_compile_options(allocator PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,10 +58,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(ip_filter_cli PRIVATE
+    target_compile_options(allocator_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(ip_filter PRIVATE
+    target_compile_options(allocator PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -71,7 +71,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS ip_filter_cli RUNTIME DESTINATION bin)
+install(TARGETS allocator_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
