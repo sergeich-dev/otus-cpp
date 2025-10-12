@@ -44,7 +44,7 @@ struct is_container<T,
 // prints vector, list, string
 template <typename Container,
           typename std::enable_if<is_container<Container>::value, bool>::type = true>
-void printIp(const Container & __attribute__((unused)) input)
+void printIp(const Container & input)
 {
     for (auto itEl = input.begin(); itEl != input.end(); )
     {
