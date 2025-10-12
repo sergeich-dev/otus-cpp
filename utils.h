@@ -69,4 +69,22 @@ void FillCustomContainer(T & custom)
     }
 }
 
+/**
+ * @brief Prints the every byte of a integral value.
+ */
+void printIntegralBytes(const void* number, size_t size)
+{
+    auto bytes = static_cast<const uint8_t*>(number);
+
+    for (size_t i = 0; i < size; ++i)
+    {
+        std::cout << static_cast<int>(bytes[size - 1 - i]);
+        if (i < size - 1)
+        {
+            std::cout << '.';
+        }
+    }
+    std::cout << std::endl;
+}
+
 #endif //_TOOLS_H_
