@@ -15,7 +15,7 @@ int main()
         std::cout << "Map with standard allocator: ";
         PrintMap(mapValues);
 
-        std::map<int, int, std::less<int>, CustomAllocator<std::pair<const int, int>>> mapValuesCA;
+        std::map<int, int, std::less<int>, CustomAllocator<std::pair<const int, int>, 10>> mapValuesCA;
 
         FillContainer(mapValuesCA);
 
@@ -30,7 +30,7 @@ int main()
 
         PrintCustomContainer(custom);
 
-        CustomContainer<int, CustomAllocator<int>> custom2;
+        CustomContainer<int, CustomAllocator<int, 10>> custom2;
 
         FillCustomContainer(custom2);
 

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 
-constexpr static size_t MAX_CONTAINER_ELEMENTS = 10;
+constexpr static int MAX_CONTAINER_ELEMENTS = 10;
 
 template <class T, class Allocator = std::allocator<T>>
 class CustomContainer
@@ -21,7 +21,7 @@ private:
 
     Allocator allocator;
 
-    size_t    nElementsCount = 0;
+    int    nElementsCount = 0;
     T*        pBegin         = nullptr;
 };
 
@@ -42,9 +42,14 @@ void CustomContainer<T, Allocator>::insert(T elem)
     if (!pBegin)
         pBegin = allocator.allocate(MAX_CONTAINER_ELEMENTS);
 
-    pBegin[nElementsCount] = elem;
+    if (nElementsCount < MAX_CONTAINER_ELEMENTS)
+    {
+        pBegin[nElementsCount] = elem;
 
-    nElementsCount++;
+        nElementsCount++;
+    }
+    else
+        std::cout << "Cant insert element - container is full \n";
 }
 
 template<class T, class Allocator>
