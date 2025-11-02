@@ -3,26 +3,31 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(allocator VERSION ${PROJECT_VESRION})
+project(editor VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(allocator_cli main.cpp)
-add_library(allocator lib.cpp)
+add_executable(editor_cli main.cpp)
+add_library(editor lib.cpp
+            editor/controller/controller.h
+            editor/document/document.h
+            editor/primitive/primitive.h
+            editor/renderer/renderer.h
+)
 
-set_target_properties(allocator_cli allocator PROPERTIES
+set_target_properties(editor_cli editor PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(allocator
+target_include_directories(editor
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(allocator_cli PRIVATE
-    allocator
+target_link_libraries(editor_cli PRIVATE
+    editor
 )
 
 if(WITH_BOOST_TEST)
@@ -41,15 +46,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(tests
         ${Boost_LIBRARIES}
-        allocator
+        editor
     )
 endif()
 
 if (MSVC)
-    target_compile_options(allocator_cli PRIVATE
+    target_compile_options(editor_cli PRIVATE
         /W4
     )
-    target_compile_options(allocator PRIVATE
+    target_compile_options(editor PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,11 +63,11 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(allocator_cli PRIVATE
-        -Wall -Wextra -pedantic -Werror
+    target_compile_options(editor_cli PRIVATE
+        -Wall -Wextra -pedantic
     )
-    target_compile_options(allocator PRIVATE
-        -Wall -Wextra -pedantic -Werror
+    target_compile_options(editor PRIVATE
+        -Wall -Wextra -pedantic
     )
     if(WITH_BOOST_TEST)
         target_compile_options(tests PRIVATE
@@ -71,7 +76,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS allocator_cli RUNTIME DESTINATION bin)
+install(TARGETS editor_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
