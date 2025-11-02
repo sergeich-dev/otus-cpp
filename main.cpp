@@ -1,42 +1,35 @@
 #include <iostream>
-#include <map>
-#include "custom_allocator.h"
-#include "custom_container.h"
-#include "utils.h"
+#include "editor/controller/controller.h"
+
+void onCreateDocument(CController * pController)
+{
+    pController->CreateDocument();
+}
+
+void onImportDocument(CController * pController, const std::string & path)
+{
+    pController->ImportDocument(path);
+}
+
+void onExportDocument(CController * pController, const std::string & path)
+{
+    pController->ExportDocument(path);
+}
+
+void onCreatePrimitive(CController * pController, ePrimitiveObjectType eObjType)
+{
+    pController->AddObject(eObjType);
+}
+void onRemovePrimitive(CController * pController, uint32_t nObjId)
+{
+    pController->RemoveObject(nObjId);
+}
 
 int main()
 {
     try
     {
-        std::map<int, int> mapValues;
-
-        FillContainer(mapValues);
-
-        std::cout << "Map with standard allocator: ";
-        PrintMap(mapValues);
-
-        std::map<int, int, std::less<int>, CustomAllocator<std::pair<const int, int>, 10>> mapValuesCA;
-
-        FillContainer(mapValuesCA);
-
-        std::cout << "Map with custom allocator: ";
-        PrintMap(mapValuesCA);
-
-        CustomContainer<int> custom;
-
-        FillCustomContainer(custom);
-
-        std::cout << "Custom container with standard allocator: ";
-
-        PrintCustomContainer(custom);
-
-        CustomContainer<int, CustomAllocator<int, 10>> custom2;
-
-        FillCustomContainer(custom2);
-
-        std::cout << "Custom container with custom allocator: ";
-
-        PrintCustomContainer(custom2);
+        CController controller;
     }
     catch(const std::exception &e)
     {
