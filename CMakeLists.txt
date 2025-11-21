@@ -3,31 +3,27 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(editor VERSION ${PROJECT_VESRION})
+project(matrix VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(editor_cli main.cpp)
-add_library(editor lib.cpp
-            editor/controller/controller.h
-            editor/document/document.h
-            editor/primitive/primitive.h
-            editor/renderer/renderer.h
+add_executable(matrix_cli main.cpp)
+add_library(matrix lib.cpp
 )
 
-set_target_properties(editor_cli editor PROPERTIES
-    CXX_STANDARD 14
+set_target_properties(matrix_cli matrix PROPERTIES
+    CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(editor
+target_include_directories(matrix
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(editor_cli PRIVATE
-    editor
+target_link_libraries(matrix_cli PRIVATE
+    matrix
 )
 
 if(WITH_BOOST_TEST)
@@ -46,15 +42,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(tests
         ${Boost_LIBRARIES}
-        editor
+        matrix
     )
 endif()
 
 if (MSVC)
-    target_compile_options(editor_cli PRIVATE
+    target_compile_options(matrix_cli PRIVATE
         /W4
     )
-    target_compile_options(editor PRIVATE
+    target_compile_options(matrix PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -63,10 +59,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(editor_cli PRIVATE
+    target_compile_options(matrix_cli PRIVATE
         -Wall -Wextra -pedantic
     )
-    target_compile_options(editor PRIVATE
+    target_compile_options(matrix PRIVATE
         -Wall -Wextra -pedantic
     )
     if(WITH_BOOST_TEST)
@@ -76,7 +72,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS editor_cli RUNTIME DESTINATION bin)
+install(TARGETS matrix_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
