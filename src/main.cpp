@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
-#include "utils.h"
-#include "matrix.h"
+#include "../include/utils.h"
+#include "../include/matrix/matrix.h"
 
 int main()
 {

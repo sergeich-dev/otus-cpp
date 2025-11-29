@@ -14,10 +14,14 @@ struct MatrixElement
     T   v;
 };
 
-template <typename T, int DefaultValue>
+template <typename T, T DefaultValue>
 class ProxyMatrix
 {
 public:
+     ProxyMatrix() = default;
+    ~ProxyMatrix() = default;
+
+    ProxyMatrix & operator=(const ProxyMatrix<T, DefaultValue>&) = delete;
 
     ProxyMatrix & operator[](int y_idx)
     {
@@ -94,7 +98,7 @@ private:
     MatrixElement<T>            m_ElementInProcessing = {};
 };
 
-template <typename T, int DefaultValue>
+template <typename T, T DefaultValue>
 class Matrix
 {
 public:

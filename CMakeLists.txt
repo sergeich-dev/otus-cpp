@@ -5,54 +5,20 @@ set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
 project(matrix VERSION ${PROJECT_VESRION})
 
-option(WITH_BOOST_TEST "Whether to build Boost test" ON)
+option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
 
-configure_file(version.h.in version.h)
+add_executable(matrix_cli src/main.cpp)
 
-add_executable(matrix_cli main.cpp)
-add_library(matrix lib.cpp
-)
-
-set_target_properties(matrix_cli matrix PROPERTIES
-    CXX_STANDARD 17
+set_target_properties(matrix_cli PROPERTIES
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
-
-target_include_directories(matrix
-    PRIVATE "${CMAKE_BINARY_DIR}"
-)
-
-target_link_libraries(matrix_cli PRIVATE
-    matrix
-)
-
-if(WITH_BOOST_TEST)
-    find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    add_executable(tests test_version.cpp)
-
-    set_target_properties(tests PROPERTIES
-        CXX_STANDARD 14
-        CXX_STANDARD_REQUIRED ON
-    )
-
-    set_target_properties(tests PROPERTIES
-        COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
-        INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
-    )
-
-    target_link_libraries(tests
-        ${Boost_LIBRARIES}
-        matrix
-    )
-endif()
 
 if (MSVC)
     target_compile_options(matrix_cli PRIVATE
         /W4
     )
-    target_compile_options(matrix PRIVATE
-        /W4
-    )
+
     if(WITH_BOOST_TEST)
         target_compile_options(tests PRIVATE
             /W4
@@ -62,9 +28,7 @@ else ()
     target_compile_options(matrix_cli PRIVATE
         -Wall -Wextra -pedantic
     )
-    target_compile_options(matrix PRIVATE
-        -Wall -Wextra -pedantic
-    )
+
     if(WITH_BOOST_TEST)
         target_compile_options(tests PRIVATE
             -Wall -Wextra -pedantic -Werror
