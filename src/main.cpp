@@ -1,42 +1,33 @@
 #include <iostream>
-#include <cassert>
-#include "../include/utils.h"
-#include "../include/matrix/matrix.h"
 
-int main()
+#include "../include/string_parser/string_parser.h"
+#include "../include/output/console_printer.h"
+#include "../include/output/file_saver.h"
+
+int main(int argc, char *argv[])
 {
     try
     {
-        Matrix<int, -1> matrix;
+        if (argc != 2)
+        {
+            std::cerr << "Invalid arguments count! Stop working.\n";
+            return -1;
+        }
 
-        assert(matrix.size() == 0);
+        auto nBulkSize = std::stoi(argv[1]);
 
-        auto a = matrix[0][0];
+        std::cout << "Bulk size=" << nBulkSize << ". Start parsing standard input... \n";
 
-        assert(a == -1);
-        assert(matrix.size() == 0);
+        CBulkManager manager(std::make_unique<CConsolePrinter>(), std::make_unique<CFileSaver>());
+        manager.SetBulkProcessingSize(nBulkSize);
 
-        FillMatrixMainDiagonal(matrix, {0,0}, {9,9});
+        CStringParser parser(&manager);
 
-        FillMatrixSecondaryDiagonal(matrix, {0,9}, {9,0});
-
-        std::cout << "Range from [0,0] to [8,8]: " << std::endl;
-
-        PrintMatrix(matrix, {0,0}, {8,8});
-
-        std::cout << std::endl;
-
-        std::cout << "Range from [1,1] to [8,8]: " << std::endl;
-
-        PrintMatrix(matrix, {1,1}, {8,8});
-
-        std::cout << std::endl;
-
-        // Prints total=17 because for main diagonal and secondary
-        // one element is common
-        std::cout << "Total filled cells in matrix: " << matrix.size() << " (for main diagonal and secondary one element is common)" << std::endl;
-
-        PrintMatrixCellsWithValues(matrix);
+        parser.DoWork();
+    }
+    catch (const std::invalid_argument & e)
+    {
+        std::cerr << "invalid_argument exception" << std::endl;
     }
     catch(const std::exception &e)
     {

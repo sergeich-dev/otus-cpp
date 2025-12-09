@@ -3,19 +3,26 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(matrix VERSION ${PROJECT_VESRION})
+project(bulk VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
 
-add_executable(matrix_cli src/main.cpp)
+add_executable(bulk src/main.cpp
+                        src/string_parser/string_parser.cpp
+                        src/command/command.cpp
+                        src/bulk/bulk.cpp
+                        src/bulk/bulk_manager.cpp
+                        src/output/console_printer.cpp
+                        src/output/file_saver.cpp
+)
 
-set_target_properties(matrix_cli PROPERTIES
+set_target_properties(bulk PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
 
 if (MSVC)
-    target_compile_options(matrix_cli PRIVATE
+    target_compile_options(bulk PRIVATE
         /W4
     )
 
@@ -25,7 +32,7 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(matrix_cli PRIVATE
+    target_compile_options(bulk PRIVATE
         -Wall -Wextra -pedantic
     )
 
@@ -36,7 +43,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS matrix_cli RUNTIME DESTINATION bin)
+install(TARGETS bulk RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
