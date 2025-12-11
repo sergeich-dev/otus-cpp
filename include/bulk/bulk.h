@@ -2,6 +2,7 @@
 #define _BULK_H_
 
 #include <vector>
+#include <memory>
 #include "../command/base_command.h"
 
 using ComandsList = std::vector<std::shared_ptr<CBaseCommand>>;
@@ -12,7 +13,7 @@ public:
 
     void                AddCommand  (const std::shared_ptr<CBaseCommand> & cmd);
     const ComandsList & GetCommands ();
-    void                Flush       ();
+    void                Clear       ();
     int                 GetSize     ();
 
 private:

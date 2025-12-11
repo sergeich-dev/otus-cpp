@@ -1,10 +1,12 @@
 #include "../../include/bulk/bulk_manager.h"
 
-CBulkManager::CBulkManager(std::unique_ptr<IBulkOutput> consolePrinter,
-                           std::unique_ptr<IBulkOutput> fileSaver)
-: m_ConsolePrinter  (std::move(consolePrinter))
-, m_FileSaver       (std::move(fileSaver))
-{}
+CBulkManager::CBulkManager()  = default;
+CBulkManager::~CBulkManager() = default;
+
+void CBulkManager::AddOutputMethod(std::unique_ptr<IBulkOutput> outputMethod)
+{
+    m_BulkOutputMethods.push_back(std::move(outputMethod));
+}
 
 void CBulkManager::SetBulkProcessingSize(int nBulkProcessingSize)
 {
@@ -26,14 +28,21 @@ void CBulkManager::ExecuteBulk(bool bForce)
 
     if (m_Storage.GetSize())
     {
-        m_ConsolePrinter->OutputBulk(m_Storage.GetCommands());
-        m_FileSaver->OutputBulk(m_Storage.GetCommands());
+        std::for_each(m_BulkOutputMethods.begin(), m_BulkOutputMethods.end(), [this](const auto & method)
+        {
+            method->OutputBulk(m_Storage.GetCommands());
+        });
 
-        m_Storage.Flush();
+        m_Storage.Clear();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
+
+const ComandsList & CBulkManager::GetCommands()
+{
+    return m_Storage.GetCommands();
+};
 
 bool CBulkManager::IsTimeToExecuteBulk()
 {

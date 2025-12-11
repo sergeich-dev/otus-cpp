@@ -10,7 +10,7 @@ const ComandsList & CBulk::GetCommands()
     return m_commands;
 }
 
-void CBulk::Flush()
+void CBulk::Clear()
 {
     m_commands.clear();
 }

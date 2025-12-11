@@ -5,7 +5,7 @@ set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
 project(bulk VERSION ${PROJECT_VESRION})
 
-option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
+option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 add_executable(bulk src/main.cpp
                         src/string_parser/string_parser.cpp
@@ -14,12 +14,39 @@ add_executable(bulk src/main.cpp
                         src/bulk/bulk_manager.cpp
                         src/output/console_printer.cpp
                         src/output/file_saver.cpp
+                        src/output/common.cpp
 )
+
+add_library(bulk_lib STATIC src/bulk/bulk.cpp
+                            src/bulk/bulk_manager.cpp
+                            src/command/command.cpp
+)
+target_include_directories(bulk_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_target_properties(bulk PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
+
+if(WITH_BOOST_TEST)
+    find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+    add_executable(tests tests/test_bulk_manager.cpp)
+
+    target_link_libraries(tests
+            PRIVATE bulk_lib
+    )
+
+    set_target_properties(tests PROPERTIES
+            CXX_STANDARD 14
+            CXX_STANDARD_REQUIRED ON
+    )
+
+    set_target_properties(tests PROPERTIES
+            COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+            INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+    )
+
+endif()
 
 if (MSVC)
     target_compile_options(bulk PRIVATE
@@ -33,9 +60,8 @@ if (MSVC)
     endif()
 else ()
     target_compile_options(bulk PRIVATE
-        -Wall -Wextra -pedantic
+        -Wall -Wextra -pedantic -Werror
     )
-
     if(WITH_BOOST_TEST)
         target_compile_options(tests PRIVATE
             -Wall -Wextra -pedantic -Werror

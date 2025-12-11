@@ -17,14 +17,5 @@ void CFileSaver::OutputBulk(const ComandsList &commands)
 
     std::ofstream out(filename);
 
-    out << "bulk: ";
-
-    for (auto it = commands.cbegin(); it != commands.cend(); ++it) {
-        out << (*it)->GetCommand();
-
-        if (it != commands.cend() - 1)
-            out << ", ";
-    }
-
-    out << "\n";
+    FormatOutput(out, commands);
 }

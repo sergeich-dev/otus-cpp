@@ -2,6 +2,7 @@
 #define _IBULKOUTPUT_H_
 
 #include "../bulk/bulk.h"
+#include "../../include/output/common.h"
 
 class IBulkOutput
 {

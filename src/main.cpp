@@ -18,8 +18,11 @@ int main(int argc, char *argv[])
 
         std::cout << "Bulk size=" << nBulkSize << ". Start parsing standard input... \n";
 
-        CBulkManager manager(std::make_unique<CConsolePrinter>(), std::make_unique<CFileSaver>());
+        CBulkManager manager;
         manager.SetBulkProcessingSize(nBulkSize);
+
+        manager.AddOutputMethod(std::make_unique<CConsolePrinter>());
+        manager.AddOutputMethod(std::make_unique<CFileSaver>());
 
         CStringParser parser(&manager);
 
