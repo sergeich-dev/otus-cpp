@@ -16,9 +16,12 @@ jobs:
         with:
           submodules: true
       - run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
-      - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=OFF
+      - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
       - run: cmake --build .
+      - run: cmake --build . --target proj_tests
       - run: cmake --build . --target package
+      - name: Run proj_tests
+        run: ./proj_tests
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -36,6 +39,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./bulk-0.0.${{ github.run_number }}-Linux.deb.deb
+          asset_path: ./bulk-0.0.${{ github.run_number }}-Linux.deb
           asset_name: bulk-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package

@@ -30,18 +30,18 @@ set_target_properties(bulk PROPERTIES
 
 if(WITH_BOOST_TEST)
     find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    add_executable(tests tests/test_bulk_manager.cpp)
+    add_executable(proj_tests tests/test_bulk_manager.cpp)
 
-    target_link_libraries(tests
+    target_link_libraries(proj_tests
             PRIVATE bulk_lib
     )
 
-    set_target_properties(tests PROPERTIES
+    set_target_properties(proj_tests PROPERTIES
             CXX_STANDARD 14
             CXX_STANDARD_REQUIRED ON
     )
 
-    set_target_properties(tests PROPERTIES
+    set_target_properties(proj_tests PROPERTIES
             COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
             INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
     )
@@ -54,7 +54,7 @@ if (MSVC)
     )
 
     if(WITH_BOOST_TEST)
-        target_compile_options(tests PRIVATE
+        target_compile_options(proj_tests PRIVATE
             /W4
         )
     endif()
@@ -63,7 +63,7 @@ else ()
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
-        target_compile_options(tests PRIVATE
+        target_compile_options(proj_tests PRIVATE
             -Wall -Wextra -pedantic -Werror
         )
     endif()
@@ -80,5 +80,5 @@ include(CPack)
 
 if(WITH_BOOST_TEST)
     enable_testing()
-    add_test(tests tests)
+    add_test(proj_tests proj_tests)
 endif()
