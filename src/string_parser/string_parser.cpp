@@ -18,9 +18,11 @@ void CStringParser::DoWork()
     std::cout << "End parsing." <<std::endl;
 }
 
-
 void CStringParser::processString(const std::string & str)
 {
+    if (str.empty())
+        return;
+
     if (str == "{")
     {
         if (m_brackets.empty()) {
@@ -32,13 +34,20 @@ void CStringParser::processString(const std::string & str)
     }
     else if (str == "}")
     {
+        if (m_brackets.empty())
+        {
+            // nothing to do, stack empty
+            return;
+        }
+
         if (m_brackets.top() != "{")
         {
             // nothing to do, no corresponding opening bracket
             return;
         }
 
-        m_brackets.pop();
+        if (!m_brackets.empty())
+            m_brackets.pop();
 
         if (m_brackets.empty()) {
             // time to execute dynamic block
