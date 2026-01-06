@@ -1,36 +1,34 @@
 #include <iostream>
-
-#include "../include/string_parser/string_parser.h"
-#include "../include/output/console_printer.h"
-#include "../include/output/file_saver.h"
+#include "../include/args_parser.h"
+#include "../include/files_collector.h"
 
 int main(int argc, char *argv[])
 {
     try
     {
-        if (argc != 2)
+        CArgsParser parser;
+
+        parser.Parse(argc, argv);
+
+        auto parsedArguments = parser.GetParsedValues();
+
+        CFilesCollector filesCollector;
+
+        if (!parsedArguments.m_Dirs.empty())
         {
-            std::cerr << "Invalid arguments count! Stop working.\n";
-            return -1;
+            filesCollector.CollectFiles(parsedArguments.m_Dirs, parsedArguments.m_ExcludedDirs, parsedArguments.m_RecursionLevel,
+                                        parsedArguments.m_FileMinimalSize, parsedArguments.m_FileMasks);
+
+            filesCollector.SetReadingBlockSize(parsedArguments.m_FileReadBlockSize);
+            filesCollector.SetHashAlgorythm(parsedArguments.m_HashAlgorythm);
+
+            std::cout << "Start scanning for duplicate files... \n\n";
+            filesCollector.PrepareDuplicates();
+
+            filesCollector.PrintDuplicates();
+
+            std::cout << "Finish \n";
         }
-
-        auto nBulkSize = std::stoi(argv[1]);
-
-        std::cout << "Bulk size=" << nBulkSize << ". Start parsing standard input... \n";
-
-        CBulkManager manager;
-        manager.SetBulkProcessingSize(nBulkSize);
-
-        manager.AddOutputMethod(std::make_unique<CConsolePrinter>());
-        manager.AddOutputMethod(std::make_unique<CFileSaver>());
-
-        CStringParser parser(&manager);
-
-        parser.DoWork();
-    }
-    catch (const std::invalid_argument & e)
-    {
-        std::cerr << "invalid_argument exception" << std::endl;
     }
     catch(const std::exception &e)
     {
