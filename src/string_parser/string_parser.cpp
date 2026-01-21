@@ -8,14 +8,14 @@ CStringParser::CStringParser(CBulkManager * manager)
 void CStringParser::DoWork()
 {
     std::string line;
-    while ( getline(std::cin, line) )
+    while (getline(std::cin, line))
     {
         processString(line);
     }
 
     m_pBulkManager->ExecuteBulk(true);
 
-    std::cout << "End parsing." <<std::endl;
+    std::cout << "End parsing." << std::endl;
 }
 
 void CStringParser::processString(const std::string & str)

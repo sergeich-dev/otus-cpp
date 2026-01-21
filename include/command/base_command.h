@@ -14,6 +14,8 @@ public:
                                         ~CBaseCommand    () = default;
 
         std::string                      GetCommand       () const;
+        uint64_t                         GetCommandID     () const;
+        void                             SetCommandID     (uint64_t cmdID);
 
         size_t                           GetCmdReceiveTime();
 
@@ -21,6 +23,17 @@ private:
 
     TTimePoint                          m_CommandReceivedTime;
     std::string                         m_Command;
+    uint64_t                            m_CommandID;
 };
+
+inline uint64_t CBaseCommand::GetCommandID() const
+{
+    return m_CommandID;
+}
+
+inline void CBaseCommand::SetCommandID(uint64_t cmdID)
+{
+    m_CommandID = cmdID;
+}
 
 #endif //_COMMAND_H_

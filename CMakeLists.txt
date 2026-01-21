@@ -11,6 +11,7 @@ add_executable(bulk src/main.cpp
                         src/string_parser/string_parser.cpp
                         src/command/command.cpp
                         src/bulk/bulk.cpp
+                        src/bulk/bulk_queue.cpp
                         src/bulk/bulk_manager.cpp
                         src/output/console_printer.cpp
                         src/output/file_saver.cpp

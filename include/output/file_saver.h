@@ -6,7 +6,7 @@
 class CFileSaver : public IBulkOutput
 {
 public:
-    virtual void OutputBulk(const ComandsList& commands) override;
+    virtual void OutputBulk(const ComandsList& commands, const std::string & postfix) const override;
 };
 
 

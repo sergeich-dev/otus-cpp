@@ -8,7 +8,8 @@ class IBulkOutput
 {
 public:
     virtual ~IBulkOutput() = default;
-    virtual void OutputBulk(const ComandsList& commands) = 0;
+
+    virtual void OutputBulk(const ComandsList& commands, const std::string & postfix) const = 0;
 };
 
 #endif //_IBULKOUTPUT_H_
