@@ -9,17 +9,14 @@
 class CStringParser
 {
 public:
-           explicit CStringParser(CBulkManager          * manager);
-                   ~CStringParser() = default;
+           explicit CStringParser(int nBulkProcessingSize);
+                   ~CStringParser();
 
-    void            DoWork       ();
-
-private:
-    void            processString(const std::string & str);
+    void            ProcessString(const std::string & str);
 
 private:
 
-    CBulkManager                * m_pBulkManager;
+    std::unique_ptr<CBulkManager> m_pBulkManager;
     std::stack<std::string>       m_brackets;
 };
 

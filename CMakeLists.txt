@@ -3,28 +3,31 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(bulk VERSION ${PROJECT_VESRION})
+project(async VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
-add_executable(bulk src/main.cpp
-                        src/string_parser/string_parser.cpp
-                        src/command/command.cpp
-                        src/bulk/bulk.cpp
-                        src/bulk/bulk_queue.cpp
-                        src/bulk/bulk_manager.cpp
-                        src/output/console_printer.cpp
-                        src/output/file_saver.cpp
-                        src/output/common.cpp
+add_library(async_lib SHARED
+        lib/src/async.cpp
+        lib/src/string_parser/string_parser.cpp
+        lib/src/command/command.cpp
+        lib/src/bulk/bulk.cpp
+        lib/src/bulk/bulk_manager.cpp
+        lib/src/output/console_printer.cpp
+        lib/src/output/file_saver.cpp
+        lib/src/output/common.cpp
 )
 
-add_library(bulk_lib STATIC src/bulk/bulk.cpp
-                            src/bulk/bulk_manager.cpp
-                            src/command/command.cpp
+target_include_directories(async_lib PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/include
 )
-target_include_directories(bulk_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-set_target_properties(bulk PROPERTIES
+add_executable(async main.cpp
+)
+
+target_link_libraries(async PRIVATE async_lib)
+
+set_target_properties(async PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
@@ -34,7 +37,7 @@ if(WITH_BOOST_TEST)
     add_executable(proj_tests tests/test_bulk_manager.cpp)
 
     target_link_libraries(proj_tests
-            PRIVATE bulk_lib
+            PRIVATE async_lib
     )
 
     set_target_properties(proj_tests PROPERTIES
@@ -50,7 +53,7 @@ if(WITH_BOOST_TEST)
 endif()
 
 if (MSVC)
-    target_compile_options(bulk PRIVATE
+    target_compile_options(async PRIVATE
         /W4
     )
 
@@ -60,7 +63,7 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(bulk PRIVATE
+    target_compile_options(async PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -70,13 +73,16 @@ else ()
     endif()
 endif()
 
-install(TARGETS bulk RUNTIME DESTINATION bin)
+install(TARGETS async RUNTIME DESTINATION bin)
+install(TARGETS async_lib LIBRARY DESTINATION lib)
 
-set(CPACK_GENERATOR DEB)
-set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
-set(CPACK_PACKAGE_CONTACT example@example.com)
+#install(FILES include/async.h DESTINATION include)
+
+set(CPACK_PACKAGE_CONTACT "sergeichm54@gmail.com")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Vitaly L. sergeichm54@gmail.com")
+
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_GENERATOR "DEB")
 include(CPack)
 
 if(WITH_BOOST_TEST)
