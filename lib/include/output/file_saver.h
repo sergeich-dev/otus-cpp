@@ -1,7 +1,7 @@
 #ifndef _FILE_SAVER_H_
 #define _FILE_SAVER_H_
 
-#include "../output/ibulkoutput.h"
+#include "ibulkoutput.h"
 
 class CFileSaver : public IBulkOutput
 {
