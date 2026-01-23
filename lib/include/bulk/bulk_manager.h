@@ -3,12 +3,15 @@
 
 #include <iostream>
 #include "bulk.h"
-#include "bulk_queue.h"
 #include "../output/ibulkoutput.h"
 #include "../output/file_saver.h"
 #include "../output/console_printer.h"
 #include <chrono>
+#include <queue>
+#include <array>
 #include <thread>
+#include <atomic>
+#include <sstream>
 #include <algorithm>
 #include <condition_variable>
 
