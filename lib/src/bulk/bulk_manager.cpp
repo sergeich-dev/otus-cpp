@@ -46,7 +46,7 @@ void CBulkManager::ExecuteBulk(bool bForce)
 {
     if (!bForce && m_Storage.GetSize() != m_nBulkProcessingSize)
     {
-        std::cout << "Its too early to execute bulk! \n";
+        // too early to execute bulk!
         return;
     }
 
@@ -77,8 +77,6 @@ bool CBulkManager::IsTimeToExecuteBulk()
 
 void CBulkManager::ConsoleThreadWork()
 {
-    //std::cout << ">> CBulkManager::ConsoleThreadWork() threadId=" << std::this_thread::get_id() << "\n";
-
     while (1) {
         std::unique_lock<std::mutex> lck{m_mutex};
 
@@ -106,14 +104,10 @@ void CBulkManager::ConsoleThreadWork()
 
         ProcessQueueElement(CBulk::E_PF_CONSOLE_PROCESSING, elemCopy);
     }
-
-   // std::cout << "<< CBulkManager::ConsoleThreadWork() \n";
 }
 
 void CBulkManager::FileThreadWork()
 {
-   // std::cout << ">> CBulkManager::FileThreadWork() threadId=" << std::this_thread::get_id() << "\n";
-
     while (1) {
         std::unique_lock<std::mutex> lck{m_mutex};
 
@@ -142,8 +136,6 @@ void CBulkManager::FileThreadWork()
 
         ProcessQueueElement(CBulk::E_PF_FILE_PROCESSING, elemCopy);
     }
-
- //   std::cout << "<< CBulkManager::FileThreadWork() \n";
 }
 
 void CBulkManager::ProcessQueueElement(CBulk::eProcessingFlag eProcessingFlag, const CBulk & elem)

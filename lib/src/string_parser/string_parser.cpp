@@ -1,24 +1,21 @@
 #include "../../include/string_parser/string_parser.h"
 #include <iostream>
 
-CStringParser::CStringParser(CBulkManager * manager)
-: m_pBulkManager(manager)
-{}
-
-void CStringParser::DoWork()
+CStringParser::CStringParser(int nBulkProcessingSize)
+: m_pBulkManager(std::make_unique<CBulkManager>())
 {
-    std::string line;
-    while (getline(std::cin, line))
-    {
-        processString(line);
-    }
+    m_pBulkManager->SetBulkProcessingSize(nBulkProcessingSize);
 
-    m_pBulkManager->ExecuteBulk(true);
-
-    std::cout << "End parsing." << std::endl;
+    m_pBulkManager->AddOutputMethod(std::make_unique<CConsolePrinter>());
+    m_pBulkManager->AddOutputMethod(std::make_unique<CFileSaver>());
 }
 
-void CStringParser::processString(const std::string & str)
+CStringParser::~CStringParser()
+{
+    m_pBulkManager->ExecuteBulk(true);
+}
+
+void CStringParser::ProcessString(const std::string & str)
 {
     if (str.empty())
         return;

@@ -7,22 +7,25 @@ project(bulk VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
-add_executable(bulk src/main.cpp
-                        src/string_parser/string_parser.cpp
-                        src/command/command.cpp
-                        src/bulk/bulk.cpp
-                        src/bulk/bulk_queue.cpp
-                        src/bulk/bulk_manager.cpp
-                        src/output/console_printer.cpp
-                        src/output/file_saver.cpp
-                        src/output/common.cpp
+add_library(async SHARED
+        lib/src/async.cpp
+        lib/src/string_parser/string_parser.cpp
+        lib/src/command/command.cpp
+        lib/src/bulk/bulk.cpp
+        lib/src/bulk/bulk_manager.cpp
+        lib/src/output/console_printer.cpp
+        lib/src/output/file_saver.cpp
+        lib/src/output/common.cpp
 )
 
-add_library(bulk_lib STATIC src/bulk/bulk.cpp
-                            src/bulk/bulk_manager.cpp
-                            src/command/command.cpp
+target_include_directories(async PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/include
 )
-target_include_directories(bulk_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(bulk main.cpp
+)
+
+target_link_libraries(bulk PRIVATE async)
 
 set_target_properties(bulk PROPERTIES
     CXX_STANDARD 20
@@ -34,7 +37,7 @@ if(WITH_BOOST_TEST)
     add_executable(proj_tests tests/test_bulk_manager.cpp)
 
     target_link_libraries(proj_tests
-            PRIVATE bulk_lib
+            PRIVATE async
     )
 
     set_target_properties(proj_tests PROPERTIES
