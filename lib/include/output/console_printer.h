@@ -1,7 +1,7 @@
 #ifndef _CONSOLE_PRINTER_H_
 #define _CONSOLE_PRINTER_H_
 
-#include "../output/ibulkoutput.h"
+#include "ibulkoutput.h"
 
 class CConsolePrinter : public IBulkOutput
 {
